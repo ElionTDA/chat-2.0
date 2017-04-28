@@ -12,7 +12,7 @@ public class ChatServerImpl implements ChatServer {
 	}
 	
 	public int checkIn(ChatClient client) throws RemoteException {
-		// TODO Auto-generated method stub
+		// TODO devuelve un id al clinete.
 		return 0;
 	}
 
