@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 
 import es.ubu.lsi.common.ChatMessage;
 
-public class ChatClientImpl implements ChatClient {
+public class ChatClientImpl implements ChatClient, Runnable {
 
 	private int id;
 	private String nickname;
@@ -34,6 +34,11 @@ public class ChatClientImpl implements ChatClient {
 
 	public String getNickName() throws RemoteException {
 		return nickname;
+	}
+
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
