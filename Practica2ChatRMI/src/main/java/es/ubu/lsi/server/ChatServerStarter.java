@@ -1,24 +1,32 @@
 package es.ubu.lsi.server;
 
-import java.lang.annotation.Inherited;
+import java.io.IOException;
 import java.rmi.Naming;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.rmi.server.RMIClassLoader;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Properties;
 
-public class ChatServerStarter extends UnicastRemoteObject {
+public class ChatServerStarter extends UnicastRemoteObject implements Runnable {
 	
 	private static final long serialVersionUID = 6608910429471937930L;
 
 	protected ChatServerStarter() throws RemoteException {
 		super();
 	}
-   	
-   	
 
-	public static void main(String args[]) {
+	public void run() {
+		//TODO: Run 
+	}	
 
-   	}	
+	public static void main(String[] args) throws RemoteException, IOException {
+		
+		ChatServer server = new ChatServerImpl();
+		
+		Naming.rebind("rmi://localhost/ChatServerStarter", server);
+		System.out.println("Registro RMI completo");
+		
+		//Thread t = new Thread(server).start();
+		
+		System.out.println("Servidor funcionando...");
+	}
+
 }

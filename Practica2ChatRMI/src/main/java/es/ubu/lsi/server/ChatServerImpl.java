@@ -1,14 +1,9 @@
 package es.ubu.lsi.server;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-
 import es.ubu.lsi.client.ChatClient;
-import es.ubu.lsi.client.ChatClientImpl;
 import es.ubu.lsi.common.ChatMessage;
 
 public class ChatServerImpl implements ChatServer {
@@ -18,6 +13,10 @@ public class ChatServerImpl implements ChatServer {
 	public ChatServerImpl(){
 		super();
 		clientes = new ArrayList<ChatClient>();
+	}
+	
+	public List<ChatClient> getClientes(){
+		return clientes;
 	}
 	
 	public int checkIn(ChatClient client) throws RemoteException {
@@ -35,24 +34,13 @@ public class ChatServerImpl implements ChatServer {
 
 	public void publish(ChatMessage msg) throws RemoteException {
 		// TODO Publica un mensaje recibido
+		System.out.println(msg.getNickname() + ": " + msg.getMessage());
 
 	}
 
 	public void shutdown(ChatClient client) throws RemoteException {
 		// TODO Manda apagar el servidor
 
-	}
-	
-	public static void main(String[] args) throws RemoteException, IOException {
-		
-		ChatServer server = new ChatServerImpl();
-		
-		Naming.rebind("rmi://localhost/ChatServerStarter", server);
-		System.out.println("Registro RMI completo");
-		
-		Thread t = new Thread((ChatClientImpl)server);
-		t.start();
-		System.out.println("Servidor funcionando...");
 	}
 
 }
