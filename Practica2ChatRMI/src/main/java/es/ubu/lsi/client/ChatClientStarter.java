@@ -2,14 +2,15 @@ package es.ubu.lsi.client;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.util.List;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 import es.ubu.lsi.common.ChatMessage;
 import es.ubu.lsi.server.ChatServerImpl;
 
-public class ChatClientStarter {
-	private final static String DEFAULT_HOST = "";
+public class ChatClientStarter implements Runnable {
+	private final static String DEFAULT_HOST = "1099";
 	
 	private String nickname;
 	private String host;
@@ -22,16 +23,18 @@ public class ChatClientStarter {
 		this.nickname = nickname;
 		this.host = DEFAULT_HOST;
 		
+		String serverURL = "rmi://localhost/Servidor";
+		
 		try{
-			ChatServerImpl obj = (ChatServerImpl) Naming.lookup("rmi://localhost/ChatServerStarter");
-			cliente = new ChatClientImpl(nickname, host);
-			obj.checkIn(cliente);
+			//ChatServerImpl obj = (ChatServerImpl) Naming.lookup(serverURL);
+			//cliente = new ChatClientImpl(nickname, host);
+			//obj.checkIn(cliente);
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-		
-		start();
 	}
+	
+	/*
 	public ChatClientStarter(String nickname, String host){
 		this.nickname = nickname;
 		
@@ -47,16 +50,8 @@ public class ChatClientStarter {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-		start();
 	}
-	
-	
-	public void start(){
-		boolean alive = true;
-		while(alive){
-			alive = false;
-		}
-	}
+	*/
 	
 	public void run() {
 		Scanner scanner = new Scanner(System.in);
@@ -76,6 +71,23 @@ public class ChatClientStarter {
 		
 		}
 		
+	}
+	
+	public static void main(String[] args) {
+		String serverURL = "rmi://localhost/Servidor";
+		ChatClientImpl cliente;
+		try {
+			Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+			ChatServerImpl obj = (ChatServerImpl) registry.lookup(serverURL);
+			//ChatServer server = (ChatServer)Naming.lookup(serverURL);
+			//ChatServerImpl obj = (ChatServerImpl) Naming.lookup(serverURL);
+			cliente = new ChatClientImpl(args[0], DEFAULT_HOST);
+			obj.checkIn(cliente);
+			Thread t = new Thread( new ChatClientStarter(args[0]) );
+			t.start();
+		} catch (Exception e) {
+			e.printStackTrace(); 
+		}
 	}
 	
 	

@@ -30,6 +30,7 @@ public class ChatServerDynamic {
 					"es.ubu.lsi.server.ChatServerStarter");
 			// inicia el cliente
 			serverClass.newInstance();
+			System.out.println("Nueva instancia");
 		} catch (Exception e) {
 			System.err.println("Excepcion en arranque del servidor " + e.toString());
 		}	

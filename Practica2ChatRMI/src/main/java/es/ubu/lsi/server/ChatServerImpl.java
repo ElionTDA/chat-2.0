@@ -1,13 +1,16 @@
 package es.ubu.lsi.server;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import es.ubu.lsi.client.ChatClient;
 import es.ubu.lsi.common.ChatMessage;
 
-public class ChatServerImpl implements ChatServer {
+public class ChatServerImpl implements ChatServer, Serializable {
 
+	private static final long serialVersionUID = -4226728489186953679L;
+	
 	private List<ChatClient> clientes;
 	
 	public ChatServerImpl(){
