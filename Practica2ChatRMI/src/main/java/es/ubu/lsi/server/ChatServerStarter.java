@@ -12,14 +12,25 @@ public class ChatServerStarter extends UnicastRemoteObject {
 
 	protected ChatServerStarter() throws RemoteException, MalformedURLException {
 		super();
-
-		LocateRegistry.createRegistry(2020);
-		
-		ChatServer server = new ChatServerImpl();
-		Naming.rebind("//localhost:2020/Servidor", server);
-		System.out.println("Registro RMI completo");
-		
-		System.out.println("Servidor funcionando...");
 	}
+	
+	
+	public static void main(String[] args) {
+		
+		try {
+			
+			LocateRegistry.createRegistry(2020);
+			
+			ChatServer server = new ChatServerImpl();
+			Naming.rebind("//localhost:2020/Servidor", server);
+			System.out.println("Registro RMI completo");
+			
+			System.out.println("Servidor funcionando...");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+		
 
 }

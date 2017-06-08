@@ -1,4 +1,4 @@
-package es.ubu.lsi.client;
+ package es.ubu.lsi.client;
 
 import java.lang.reflect.Constructor;
 import java.rmi.server.RMIClassLoader;
