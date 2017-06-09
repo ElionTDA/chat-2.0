@@ -48,6 +48,15 @@ public interface ChatClient extends Remote {
 	 * @throws RemoteException if remote communication has problems
 	 */
 	public abstract String getNickName() throws RemoteException;
+	
+	/**
+	 * Sets current nickname.
+	 * 
+	 * @param nickname nickname
+	 * @see #getNickname
+	 * @throws RemoteException if remote communication has problems
+	 */
+	public abstract void setNickame(String nickname) throws RemoteException;
 
 	/**
 	 * Gets the login time.
@@ -56,4 +65,13 @@ public interface ChatClient extends Remote {
 	 * @throws RemoteException if remote communication has problems
 	 */
 	public abstract String getLoginTime() throws RemoteException;
+	
+	/**
+	 * Sets the login time.
+	 * 
+	 * @param time loginTime
+	 * @see #getLoginTime 
+	 * @throws RemoteException if remote communication has problems
+	 */
+	public abstract void setLoginTime(String string) throws RemoteException;
 }

@@ -11,22 +11,44 @@ import es.ubu.lsi.common.ChatMessage;
 import es.ubu.lsi.server.ChatServerImpl;
 
 public class ChatClientStarter {
+	
+	/**
+	 * Dirección del servidor por defecto
+	 */
 	private final static String DEFAULT_HOST = "rmi://localhost/ChatServerImpl";
 	
+	/**
+	 * Nickname del cliente
+	 */
 	private String nickname;
+	
+	/**
+	 * Dirección del servidor
+	 */
 	private String host;
 	
+	/**
+	 * Cliente
+	 */
 	private ChatClientImpl cliente;
+	
+	/**
+	 * Servidor
+	 */
 	private ChatServerImpl server;
 	
+	/**
+	 * Formato de la fecha
+	 */
 	SimpleDateFormat sdt = new SimpleDateFormat("hh:mm");
 	
-	public ChatClientStarter(){
-		
-	}
-	
+	/**
+	 * Contructor de la clase ChatClientStarter
+	 * @param args argumentos
+	 */
 	public ChatClientStarter(String[] args){
 		
+		//Comprobamos los argumentos y asignamos el nickname y el host
 		if (args.length == 2){
 			nickname = args[0];
 			host = args[1];
@@ -48,14 +70,18 @@ public class ChatClientStarter {
 			// Guardamos la hora del registro del cliente
 			cliente.setLoginTime( sdt.format(new Date()));
 			
+			// Mensaje de bienvenida
 			cliente.receive(new ChatMessage(0, "Hola " + cliente.getNickName() + " escribe un mesaje: "));
 			
 			while(true){
 				
 				try {
+					
+					// Iniciamos el lector
 					BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 					String msg = in.readLine();
 					
+					// Comprobamos el tipo de mensaje
 					if (msg != null){
 						if (msg.equals("logout")){
 							server.logout(cliente);
