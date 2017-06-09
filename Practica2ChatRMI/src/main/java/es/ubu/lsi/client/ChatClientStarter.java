@@ -1,105 +1,85 @@
 package es.ubu.lsi.client;
 
-import java.net.MalformedURLException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import es.ubu.lsi.common.ChatMessage;
-import es.ubu.lsi.server.ChatServer;
 import es.ubu.lsi.server.ChatServerImpl;
 
-public class ChatClientStarter implements Runnable {
+public class ChatClientStarter {
 	private final static String DEFAULT_HOST = "1099";
 	
 	private String nickname;
 	private String host;
 	
 	private ChatClientImpl cliente;
-	private ChatServerImpl serverObj;
-	//private List<ChatClient> listaServidor;
+	private ChatServerImpl server;
+	
+	SimpleDateFormat sdt = new SimpleDateFormat("hh:mm");
 	
 	public ChatClientStarter(){
 		
 	}
 	
-	public ChatClientStarter(String nickname){
-		this.nickname = nickname;
-		this.host = DEFAULT_HOST;
+	public ChatClientStarter(String[] args){
+		
+		if (args.length == 2){
+			nickname = args[0];
+			host = args[1];
+		} else if (args.length == 1) {
+			nickname = args[0];
+			host = DEFAULT_HOST;
+		}else {
+			System.err.println("Debes introducir al menos el nickname.");
+		}
 		
 		try{
-			String serverURL = "rmi://localhost/Servidor";
-			ChatServerImpl obj = (ChatServerImpl) Naming.lookup(serverURL);
-			cliente = new ChatClientImpl(nickname, host);
-			obj.checkIn(cliente);
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	
-	/*
-	public ChatClientStarter(String nickname, String host){
-		this.nickname = nickname;
-		
-		if(host != null && host != ""){
-			this.host = host;
-		} else {
-			this.host = DEFAULT_HOST;
-		}
-		try{
-			ChatServerImpl obj = (ChatServerImpl) Naming.lookup("rmi://localhost/ChatServerStarter");
-			cliente = new ChatClientImpl(nickname, host);
-			obj.checkIn(cliente);
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-	}
-	*/
-	
-	public void run() {
-		Scanner scanner = new Scanner(System.in);
-		this.serverObj = new ChatServerImpl();
-		
-		while(true){
-			//listaServidor = serverObj.getClientes();
-			try {
-				System.out.println("Hola, " + nickname + "introduce un mensaje: ");
-				String msg = scanner.nextLine();
-				if (  msg == "logout") serverObj.logout(cliente);
-				ChatMessage mensaje = new ChatMessage(msg.hashCode(), msg);
-				serverObj.publish(mensaje);
-			} catch (RemoteException e) {
-				e.printStackTrace();
+			
+			// Registro del cliente en el servidor
+			String serverURL = "rmi://localhost/ChatServerImpl";
+			server = (ChatServerImpl) Naming.lookup(serverURL);
+			cliente = new ChatClientImpl();
+			cliente.setNickame(nickname);
+			cliente.setId(server.checkIn(cliente));
+			
+			// Guardamos la hora del registro del cliente
+			cliente.setLoginTime( sdt.format(new Date()));
+			
+			cliente.receive(new ChatMessage(0, "Hola " + cliente.getNickName() + " escribe un mesaje: "));
+			
+			while(true){
+				
+				try {
+					BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+					String msg = in.readLine();
+					
+					if (msg != null){
+						if (msg.equals("logout")){
+							server.logout(cliente);
+						} else if ( msg.equals("who")){
+							System.out.println("Lista de clientes conectados: ");
+							for( ChatClient cliente : server.getClientes()){
+								System.out.println("-" + cliente + "(" + cliente.getLoginTime() + ")");
+							}
+						} else {
+							ChatMessage mensaje = new ChatMessage(cliente.getId(), msg);
+							server.publish(mensaje);
+						}
+					}
+					
+				} catch (IOException e) {
+					System.err.println("Error al introducir texto: " + e.getMessage());
+				}
+				
 			}
-		
+			
+		} catch (Exception e){
+			System.err.println("Excepción en el cliente: " + e.getMessage());
 		}
-		
 	}
-	
-	public static void main(String[] args) {
-		String serverURL = "rmi://localhost/Servidor";
-		ChatClientImpl cliente;
-		ChatServer server;
-		
-		try {
-			//Registry registry = LocateRegistry.getRegistry("localhost", 1099);
-			//ChatServerImpl serverObj = (ChatServerImpl) registry.lookup(serverURL);
-			server = (ChatServer)Naming.lookup(serverURL); //Probar con ChatServerImpl
-			cliente = new ChatClientImpl(args[0], DEFAULT_HOST);
-			server.checkIn(cliente);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			e.printStackTrace();
-		}
-		
-		new Thread( new ChatClientStarter(args[0]) ).start();
-		
-	}
-	
 	
 }

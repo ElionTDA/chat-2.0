@@ -29,6 +29,7 @@ public class ChatServerImpl implements ChatServer, Serializable {
 
 	public void logout(ChatClient client) throws RemoteException {
 		clientes.remove(client);
+		client.receive( new ChatMessage(0, "El cliente " + client.getNickName() + " se ha desconectado.") );
 	}
 
 	public void privatemsg(String tonickname, ChatMessage msg) throws RemoteException {
@@ -36,7 +37,6 @@ public class ChatServerImpl implements ChatServer, Serializable {
 	}
 
 	public void publish(ChatMessage msg) throws RemoteException {
-		// TODO Publica un mensaje recibido
 		System.out.println(msg.getNickname() + ": " + msg.getMessage());
 
 	}

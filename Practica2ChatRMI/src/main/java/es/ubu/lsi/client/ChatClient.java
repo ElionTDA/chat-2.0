@@ -48,4 +48,12 @@ public interface ChatClient extends Remote {
 	 * @throws RemoteException if remote communication has problems
 	 */
 	public abstract String getNickName() throws RemoteException;
+
+	/**
+	 * Gets the login time.
+	 * 
+	 * @return loginTime 
+	 * @throws RemoteException if remote communication has problems
+	 */
+	public abstract String getLoginTime() throws RemoteException;
 }
