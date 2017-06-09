@@ -11,7 +11,7 @@ import es.ubu.lsi.common.ChatMessage;
 import es.ubu.lsi.server.ChatServerImpl;
 
 public class ChatClientStarter {
-	private final static String DEFAULT_HOST = "1099";
+	private final static String DEFAULT_HOST = "rmi://localhost/ChatServerImpl";
 	
 	private String nickname;
 	private String host;
@@ -40,8 +40,7 @@ public class ChatClientStarter {
 		try{
 			
 			// Registro del cliente en el servidor
-			String serverURL = "rmi://localhost/ChatServerImpl";
-			server = (ChatServerImpl) Naming.lookup(serverURL);
+			server = (ChatServerImpl) Naming.lookup(host);
 			cliente = new ChatClientImpl();
 			cliente.setNickame(nickname);
 			cliente.setId(server.checkIn(cliente));
